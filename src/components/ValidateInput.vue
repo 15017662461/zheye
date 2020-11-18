@@ -16,7 +16,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, PropType, reactive } from "vue";
-import { emitter } from './ValidateForm.vue'
+import { emitter } from "../main";
 interface RuleProp {
   type: "required" | "email";
   message: string;
@@ -29,7 +29,7 @@ export default defineComponent({
     rules: Array as PropType<RulesProp>,
     modelValue: String,
   },
-  inheritAttrs:false,
+  inheritAttrs: false,
   setup(props, context) {
     const inputRef = reactive({
       val: props.modelValue || "",
@@ -42,8 +42,8 @@ export default defineComponent({
       context.emit("update:modelValue", targetValue);
     };
     const clearValue = () => {
-      inputRef.val = ''
-    }
+      inputRef.val = "";
+    };
     const validateInput = () => {
       if (props.rules) {
         const allPassed = props.rules.every((rule) => {
@@ -62,20 +62,21 @@ export default defineComponent({
           return passed;
         });
         inputRef.error = !allPassed;
-        return allPassed
+        return allPassed;
+      } else {
+        return true;
       }
-      return true
     };
-    emitter.on('clear-value',() => {
-      clearValue()
-    })
+    emitter.on("clear-value", () => {
+      clearValue();
+    });
     onMounted(() => {
-      emitter.emit('form-item-created',validateInput)
-    })
+      emitter.emit("form-item-created", validateInput);
+    });
     return {
       inputRef,
       validateInput,
-      updateValue
+      updateValue,
     };
   },
 });

@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <globale-header :user="currentUser"></globale-header>
+  <div class="container-fluid px-0 flex-shrink-0">
+    <globale-header :user="user"></globale-header>
     <router-view></router-view>
     <footer class="text-center py-4 text-secondary bg-light mt-6">
       <small>
@@ -20,15 +20,12 @@
 <script lang="ts">
 import {
   defineComponent,
+  computed
 } from "vue";
 import GlobaleHeader, { UserProps } from "./components/GlobalHeader.vue";
+import { useStore } from 'vuex'
+import { GlobalDataProps } from './store'
 import "bootstrap/dist/css/bootstrap.min.css";
-
-const currentUser: UserProps = {
-  isLogin: true,
-  name: "123",
-  id: 123,
-};
 
 export default defineComponent({
   name: "App",
@@ -36,13 +33,17 @@ export default defineComponent({
     GlobaleHeader,
   },
   setup() {
-
+    const store = useStore<GlobalDataProps>()
+    const user = computed(() => store.state.user)
     return {
-      currentUser,
+      user,
     };
   },
 });
 </script>
 
 <style lang="scss">
+.container{
+  width: 100vw;
+}
 </style>
