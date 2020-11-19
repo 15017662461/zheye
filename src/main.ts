@@ -6,6 +6,7 @@ import mitt from 'mitt'
 import App from './App.vue'
 import './assets/css/reset.css'
 
+
 const app = createApp(App)
 app.use(router)
 app.use(store)

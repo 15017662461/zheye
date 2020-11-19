@@ -1,6 +1,5 @@
 <template>
-  <div class="home-page">
-    <h1>{{biggerColumnsLen}}</h1>
+  <div class="home-page container-md">
     <section class="py-5 text-center container">
       <div class="row py-lg-5">
         <div class="col-lg-6 col-md-8 mx-auto">
@@ -18,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from "vue"
+import { defineComponent, computed, onMounted } from "vue"
 import { useStore } from 'vuex'
 import ColumnList from '../components/ColumnList.vue'
 import { GlobalDataProps } from '../store'
@@ -34,6 +33,9 @@ export default defineComponent({
     })
     const biggerColumnsLen = computed(() => {
       return store.getters.biggerColumnsLen
+    })
+    onMounted(() =>{
+      store.dispatch('fetchColumns')
     })
     return{
       list,
