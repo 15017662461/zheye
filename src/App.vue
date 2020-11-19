@@ -14,19 +14,16 @@
         </ul>
       </small>
     </footer>
-    
   </div>
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  computed
-} from "vue";
-import GlobaleHeader, { UserProps } from "./components/GlobalHeader.vue";
-import  Loader  from './components/Loader.vue'
-import { useStore } from 'vuex'
-import { GlobalDataProps } from './store'
+import { defineComponent, computed, onMounted, watch } from "vue";
+import GlobaleHeader from "./components/GlobalHeader.vue";
+import Loader from "./components/Loader.vue";
+import createMessage from "./components/createMessage";
+import { useStore } from "vuex";
+import { GlobalDataProps, UserProps } from "./store";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default defineComponent({
@@ -36,19 +33,34 @@ export default defineComponent({
     Loader,
   },
   setup() {
-    const store = useStore<GlobalDataProps>()
-    const user = computed(() => store.state.user)
-    const isLoading = computed(() => store.state.loading)
+    const store = useStore<GlobalDataProps>();
+    const user = computed(() => store.state.user);
+    const isLoading = computed(() => store.state.loading);
+    const error = computed(() => store.state.error);
+    watch(error, () => {
+      const { status, message } = error.value;
+      if (status && message) {
+        createMessage(message, "error");
+      }
+    });
+    onMounted(() => {
+      if (!store.state.user.isLogin && store.state.token) {
+        store.dispatch("fetchCurrentUser").catch(e => {
+          store.commit('logout')
+        });
+      }
+    });
     return {
       user,
       isLoading,
+      error,
     };
   },
 });
 </script>
 
 <style lang="scss">
-.container{
+.container {
   width: 100vw;
 }
 </style>

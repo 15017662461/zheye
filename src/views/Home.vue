@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted } from "vue"
+import { defineComponent, computed, onMounted, onActivated } from "vue"
 import { useStore } from 'vuex'
 import ColumnList from '../components/ColumnList.vue'
 import { GlobalDataProps } from '../store'

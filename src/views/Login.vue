@@ -32,6 +32,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import createMessage from "../components/createMessage";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import {emitter} from '../main'
@@ -59,8 +60,21 @@ export default defineComponent({
     const onFormSubmit = (result: boolean) => {
       console.log("result", result);
       if(result){
-        store.commit('login')
-        router.push('/')
+        // store.dispatch('login',{email:emailVal.value,password:passwordVal.value})
+        // setTimeout(() => {
+        //   store.dispatch('fetchCurrentUser')
+        // },1500)
+        store.dispatch('test',{email:emailVal.value,password:passwordVal.value})
+          .then((data) => {
+            // console.log(data)
+            createMessage('登录成功 2s后跳转首页','success')
+            setTimeout(() => {
+              router.push('/')
+            },2000)
+          })
+          .catch(e => {
+            console.log(e)
+          })
       }else{
         emitter.emit('clear-value')
       }
