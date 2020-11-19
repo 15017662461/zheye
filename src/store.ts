@@ -20,6 +20,7 @@ export interface ColumnProps {
 }
 
 export interface GlobalDataProps {
+  loading: boolean;
   columns: ColumnProps[];
   posts: PostProps[];
   user: UserProps;
@@ -30,13 +31,19 @@ export interface PostProps {
   title: string;
   excerpt?: string;
   content?: string;
-  image?: string;
+  image?: PostImage;
   createAt: string;
   column: string;
 }
 
+export interface PostImage{
+  url?: string;
+  _id?: string;
+}
+
 const store = createStore<GlobalDataProps>({
   state: {
+    loading:false,
     columns: [],
     posts: [],
     user: { isLogin: true, name: 'viking', columnId: 1 }
@@ -61,29 +68,27 @@ const store = createStore<GlobalDataProps>({
       state.columns = data.list
     },
     fetchColumn(state, data) {
-      // console.log(data)
       state.columns = [data]
     },
     fetchPosts(state, data) {
-      console.log(data)
       state.posts = data.list
+    },
+    setLoading(state, status: boolean){
+      state.loading = status
     }
   },
   actions: {
-    fetchColumns(context) {
-      getColumns().then(resp => {
-        context.commit('fetchColumns', resp.data)
-      })
+    async fetchColumns(context) {
+      const { data } = await getColumns()
+      context.commit('fetchColumns', data)
     },
-    fetchColumn(context, cid) {
-      getColumn(cid).then(resp => {
-        context.commit('fetchColumn', resp.data)
-      })
+    async fetchColumn(context, cid) {
+      const { data } = await getColumn(cid)
+      context.commit('fetchColumn', data)
     },
-    fetchPosts(context, cid) {
-      getPosts(cid).then(resp => {
-        context.commit('fetchPosts', resp.data)
-      })
+    async fetchPosts(context, cid) {
+      const { data } = await getPosts(cid)
+      context.commit('fetchPosts', data)
     },
   }
 })
