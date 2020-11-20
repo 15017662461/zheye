@@ -23,7 +23,7 @@
             {{ post.excerpt }}
           </p>
         </div>
-        <span class="text-muted">{{ post.createAt }}</span>
+        <span class="text-muted">{{ post.createdAt }}</span>
       </div>
     </article>
   </div>
@@ -43,7 +43,7 @@ export default defineComponent({
   setup(props) {
     const newList = computed(() => {
       return props.list.map((l) => {
-        if (l.image && l.image.url) {
+        if (l.image  && l.image.url) {
           l.image.url =
             l.image.url + "?x-oss=process=image/resize,m_pad,h_50,w_50";
         }

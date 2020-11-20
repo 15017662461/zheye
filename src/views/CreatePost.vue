@@ -1,7 +1,7 @@
 <template>
   <div class="create-post-page">
     <h4>新建文章</h4>
-    <h2>点击上传头图</h2>
+    <input type="file" name="file" @change.prevent="handleFileChange" />
     <validate-form @form-submit="onFormSubmit">
       <div class="mb-3">
         <label class="form-label">文章标题：</label>
@@ -32,12 +32,13 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from 'vue-router'
+import { useRouter } from "vue-router";
 import ValidateForm from "../components/ValidateForm.vue";
 import ValidateInput from "../components/ValidateInput.vue";
 import { RulesProp } from "../components/ValidateInput.vue";
 import { GlobalDataProps } from "../store";
 import { PostProps } from "../store";
+import { uploadFile } from '../network/file'
 export default defineComponent({
   name: "CreatePost",
   components: {
@@ -70,11 +71,21 @@ export default defineComponent({
             title: titleVal.value,
             content: contentVal.value,
             column,
-            createAt: new Date().toLocaleString(),
+            createdAt: new Date().toLocaleString(),
           };
-          store.commit('createPost',newPost)
-          router.push({name:'column',params:{id : column}})
+          store.commit("createPost", newPost);
+          router.push({ name: "column", params: { id: column } });
         }
+      }
+    };
+    const handleFileChange = (e: Event) => {
+      const target = e.target as HTMLInputElement;
+      const files = target.files;
+      if (files) {
+        const uploadedFile = files[0];
+        const formData = new FormData();
+        formData.append(uploadedFile.name, uploadedFile);
+        uploadFile('/upload',formData)
       }
     };
 
@@ -84,6 +95,7 @@ export default defineComponent({
       titleVal,
       contentVal,
       onFormSubmit,
+      handleFileChange
     };
   },
 });

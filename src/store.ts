@@ -2,6 +2,10 @@ import axios from './network/index'
 import { createStore } from 'vuex'
 import { getColumns, getColumn, getPosts } from './network/columns'
 import { toLogin, getCurrentUser } from './network/user'
+import Home from './views/Home.vue'
+import Login from './views/Login.vue'
+import router from './router'
+
 
 export interface UserProps {
   isLogin: boolean;
@@ -32,13 +36,15 @@ export interface GlobalDataProps {
 }
 
 export interface PostProps {
-  _id: string;
+  _id?: string;
   title: string;
   excerpt?: string;
   content?: string;
   image?: PostImage;
-  createAt: string;
+  createdAt?: string;
   column: string;
+  author?: string | UserProps;
+  isHTML?: boolean;
 }
 
 export interface PostImage {
@@ -105,7 +111,8 @@ const store = createStore<GlobalDataProps>({
         isLogin: false
       }
       localStorage.removeItem('token')
-    }
+    },
+    
 
   },
   actions: {
@@ -135,7 +142,7 @@ const store = createStore<GlobalDataProps>({
       return dispatch('login',payload).then(() => {
         return dispatch('fetchCurrentUser')
       })
-    }
+    },
   }
 })
 
