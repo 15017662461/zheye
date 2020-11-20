@@ -7,7 +7,7 @@
           <a href="#" class="btn btn-outline-light my-2" @click="clickToLogin">登录</a>
         </li>
         <li class="list-inline-item">
-          <a href="#" class="btn btn-outline-light my-2">注册</a>
+          <a href="#" class="btn btn-outline-light my-2" @click="toSignup">注册</a>
         </li>
       </ul>
       <ul v-else class="list-inline mb-0">
@@ -67,11 +67,15 @@ export default defineComponent({
       store.commit('logout')
       router.push({name:'login'})
     }
+    const toSignup = () => {
+      router.push({name:'signup'})
+    } 
     return {
       createPost,
       clickToLogin,
       clickToHome,
-      toLogout
+      toLogout,
+      toSignup
     }
   }
 });
