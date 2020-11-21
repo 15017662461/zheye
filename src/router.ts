@@ -4,6 +4,7 @@ import Login from './views/Login.vue'
 import ColumnDetail from './views/ColumnDetail.vue'
 import CreatePost from './views/CreatePost.vue'
 import Signup from './views/Signup.vue'
+import PostDetail from './views/PostDetail.vue'
 import store from './store'
 
 
@@ -48,6 +49,11 @@ const routes = [
     meta:{
       redirectAlreadyLogin:true
     }
+  },
+  {
+    path:'/posts/:id',
+    name:'posts',
+    component:PostDetail
   }
 ]
 

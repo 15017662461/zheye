@@ -30,9 +30,7 @@ export default defineComponent({
   setup(){
     const router = useRouter()
     const store = useStore<GlobalDataProps>()
-    const list = computed(() => {
-      return store.state.columns
-    })
+    const list = computed(() => store.getters.getColumns)
     const biggerColumnsLen = computed(() => {
       return store.getters.biggerColumnsLen
     })

@@ -24,7 +24,7 @@ import GlobaleHeader from "./components/GlobalHeader.vue";
 import Loader from "./components/Loader.vue";
 import createMessage from "./components/createMessage";
 import { useStore } from "vuex";
-import { GlobalDataProps, UserProps, ResponseType, PostImage } from "./store";
+import { GlobalDataProps, UserProps, ResponseType } from "./store";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 

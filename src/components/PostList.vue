@@ -7,14 +7,14 @@
     >
       <div class="card-body">
         <h4>
-          <router-link :to="`/posts/${post._id}/`">{{
+          <router-link :to="`/posts/${post._id}`">{{
             post.title
           }}</router-link>
         </h4>
         <div class="row my-3 align-items-center">
           <div v-if="post.image" class="col-4">
             <img
-              :src="post.image.url"
+              :src="post.image.fitUrl"
               :alt="post.title"
               class="rounded-lg w-100"
             />
@@ -31,7 +31,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import { PostImage, PostProps } from "../store";
+import { ImageProps, PostProps } from "../store";
+import { generateFitUrl } from '../helper'
 export default defineComponent({
   name: "PostList",
   props: {
@@ -42,13 +43,9 @@ export default defineComponent({
   },
   setup(props) {
     const newList = computed(() => {
-      return props.list.map((l) => {
-        const img = l.image as PostImage
-        if (img && img.url) {
-          img.url =
-            img.url + "?x-oss=process=image/resize,m_pad,h_50,w_50";
-        }
-        return l;
+      return props.list.map(post => {
+        generateFitUrl(post.image as ImageProps, 200, 110, ['m_fill'])
+        return post
       });
     });
     return {

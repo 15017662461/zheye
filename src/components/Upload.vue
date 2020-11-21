@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
+import { defineComponent, onMounted, PropType, ref, watch } from "vue";
 import { uploadFile } from "../network/file";
 type UploadStatus = "ready" | "loading" | "success" | "error";
 type CheckFunction = (file: File) => boolean;
@@ -33,6 +33,9 @@ export default defineComponent({
     beforeUpload: {
       type: Function as PropType<CheckFunction>,
     },
+    uploaded:{
+      type: Object
+    }
   },
   emits: {
     "file-uploaded": null,
@@ -43,6 +46,12 @@ export default defineComponent({
     const fileInput = ref<null | HTMLElement>(null);
     const fileStatus = ref<UploadStatus>("ready");
     const uploadedData = ref();
+    watch(() => props.uploaded, (newValue) => {
+      if (newValue) {
+        fileStatus.value = 'success'
+        uploadedData.value = newValue
+      }
+    })
     const triggerUpload = () => {
       if (fileInput.value) {
         fileInput.value.click();
@@ -74,6 +83,12 @@ export default defineComponent({
             context.emit("file-upload-error", { error });
           });
       }
+      onMounted(() => {
+        if(props.uploaded){
+          fileStatus.value = 'success'
+          uploadedData.value = props.uploaded
+        }
+      })
     };
     return {
       fileInput,

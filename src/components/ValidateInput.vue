@@ -4,17 +4,20 @@
       v-if="tag !== 'textarea'"
       class="form-control"
       :class="{ 'is-invalid': inputRef.error }"
-      :value="inputRef.val"
+      v-model="inputRef.val"
       @blur="validateInput"
-      @input="updateValue"
       v-bind="$attrs"
     />
-    <textarea v-else class="form-control"
+    <textarea
+      v-else
+      class="form-control"
       :class="{ 'is-invalid': inputRef.error }"
-      :value="inputRef.val"
+      v-model="inputRef.val"
       @blur="validateInput"
-      @input="updateValue"
-      v-bind="$attrs" cols="30" rows="10"></textarea>
+      v-bind="$attrs"
+      cols="30"
+      rows="10"
+    ></textarea>
     <span v-if="inputRef.error" class="invalid-feedback">{{
       inputRef.message
     }}</span>
@@ -22,45 +25,42 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, PropType, reactive } from "vue";
+import { defineComponent, onMounted, PropType, reactive, computed } from "vue";
 import { emitter } from "../main";
 interface RuleProp {
-  type: "required" | "email" | 'custom';
+  type: "required" | "email" | "custom";
   message: string;
   validator?: () => boolean;
 }
 export type RulesProp = RuleProp[];
-export type TagType = 'input' | 'textarea'
+export type TagType = "input" | "textarea";
 const emailReg = /^[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*@[a-zA-Z0-9]+([-_.][a-zA-Z0-9]+)*\.[a-z]{2,}$/;
 export default defineComponent({
   name: "VlidateInput",
   props: {
     rules: Array as PropType<RulesProp>,
     modelValue: String,
-    tag:{
+    tag: {
       type: String as PropType<TagType>,
-      default: 'input'
-    }
+      default: "input",
+    },
   },
   inheritAttrs: false,
   setup(props, context) {
     const inputRef = reactive({
-      val: props.modelValue || "",
+      val: computed({
+        get: () => props.modelValue || "",
+        set: (val) => {
+          context.emit("update:modelValue", val);
+        },
+      }),
       error: false,
       message: "",
     });
-    const updateValue = (e: KeyboardEvent) => {
-      const targetValue = (e.target as HTMLInputElement).value;
-      inputRef.val = targetValue;
-      context.emit("update:modelValue", targetValue);
-    };
-    const clearValue = () => {
-      inputRef.val = "";
-    };
     const validateInput = () => {
       if (props.rules) {
         const allPassed = props.rules.every((rule) => {
-          let passed = false;
+          let passed = true;
           inputRef.message = rule.message;
           switch (rule.type) {
             case "required":
@@ -70,7 +70,7 @@ export default defineComponent({
               passed = emailReg.test(inputRef.val);
               break;
             case "custom":
-              passed = rule.validator ? rule.validator() : true
+              passed = rule.validator ? rule.validator() : true;
               break;
             default:
               break;
@@ -79,20 +79,15 @@ export default defineComponent({
         });
         inputRef.error = !allPassed;
         return allPassed;
-      } else {
-        return true;
       }
+      return true;
     };
-    emitter.on("clear-value", () => {
-      clearValue();
-    });
     onMounted(() => {
       emitter.emit("form-item-created", validateInput);
     });
     return {
       inputRef,
       validateInput,
-      updateValue,
     };
   },
 });

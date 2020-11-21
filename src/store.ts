@@ -3,9 +3,10 @@ import { createStore } from 'vuex'
 import { getColumns, getColumn, getPosts } from './network/columns'
 import { toLogin, getCurrentUser } from './network/user'
 import { post } from './network/file'
+import { findPostById } from './network/posts'
+import { arrToObj, objToArr } from './helper'
 
-
-export interface ResponseType<P = {}>{
+export interface ResponseType<P = {}> {
   code: number;
   msg: string;
   data: P;
@@ -17,43 +18,8 @@ export interface UserProps {
   _id?: string;
   column?: string;
   email?: string;
-}
-export interface AvatarType {
-  url?: string;
-  _id?: string;
-}
-
-export interface ColumnProps {
-  _id: string;
-  title: string;
-  avatar?: AvatarType;
-  description: string;
-}
-
-export interface GlobalDataProps {
-  error: GlobalErrorProps;
-  token: string;
-  loading: boolean;
-  columns: ColumnProps[];
-  posts: PostProps[];
-  user: UserProps;
-}
-
-export interface PostProps {
-  _id?: string;
-  title: string;
-  excerpt?: string;
-  content?: string;
-  image?: PostImage | string;
-  createdAt?: string;
-  column: string;
-  author?: string | UserProps;
-  isHTML?: boolean;
-}
-
-export interface PostImage {
-  url?: string;
-  _id?: string;
+  avatar?: ImageProps;
+  description?: string;
 }
 
 export interface ImageProps {
@@ -63,26 +29,66 @@ export interface ImageProps {
   fitUrl?: string;
 }
 
+export interface ColumnProps {
+  _id: string;
+  title: string;
+  avatar?: ImageProps;
+  description: string;
+}
+
+
+export interface PostProps {
+  _id?: string;
+  title: string;
+  excerpt?: string;
+  content?: string;
+  image?: ImageProps | string;
+  createdAt?: string;
+  column: string;
+  author?: string | UserProps;
+  isHTML?: boolean;
+}
+
+interface ListProps<P> {
+  [id: string]: P;
+}
+
 export interface GlobalErrorProps {
   status: boolean;
   message?: string;
 }
+
+export interface GlobalDataProps {
+  token: string;
+  error: GlobalErrorProps;
+  loading: boolean;
+  columns: { data: ListProps<ColumnProps>; currentPage: number; total: number };
+  posts: { data: ListProps<PostProps>; loadedColumns: string[] };
+  user: UserProps;
+}
+
 
 const store = createStore<GlobalDataProps>({
   state: {
     error: { status: false },
     token: localStorage.getItem('token') || '',
     loading: false,
-    columns: [],
-    posts: [],
+    columns: { data: {}, currentPage: 0, total: 0 },
+    posts: { data: {}, loadedColumns: [] },
     user: { isLogin: false }
   },
   getters: {
+    getColumns: (state) => {
+      return objToArr(state.columns.data)
+    },
     getColumnById: (state) => (id: string) => {
-      return state.columns.find(c => c._id === id)
+      return state.columns.data[id]
     },
     getPostsByCid: (state) => (cid: string) => {
-      return state.posts.filter(post => post.column === cid)
+      return objToArr(state.posts.data).filter(post => post.column === cid)
+    },
+    getCurrentPost: (state) => (id: string) => {
+      return state.posts.data[id]
     }
   },
   mutations: {
@@ -95,16 +101,28 @@ const store = createStore<GlobalDataProps>({
     },
     // column部分
     createPost(state, newPost) {
-      state.posts.push(newPost)
+      state.posts.data[newPost._id] = newPost
     },
-    fetchColumns(state, data) {
-      state.columns = data.list
+    fetchColumns(state, rawData) {
+      const { data } = state.columns
+      const { list, count, currentPage } = rawData
+      state.columns = {
+        data: { ...data, ...arrToObj(list) },
+        total: count,
+        currentPage: currentPage * 1
+      }
     },
-    fetchColumn(state, data) {
-      state.columns = [data]
+    fetchColumn(state, rawData) {
+      state.columns.data[rawData._id] = rawData
     },
-    fetchPosts(state, data) {
-      state.posts = data.list
+    fetchPosts(state, {data: rawData,extraData: cid}) {
+      // console.log(canshu)
+      state.posts.data = { ...state.posts.data, ...arrToObj(rawData.list) }
+      state.posts.loadedColumns.push(cid)
+    },
+    fetchPost(state, rawData) {
+      state.posts.data[rawData._id] = rawData
+      // console.log(data)
     },
     // user部分
     login(state, data) {
@@ -137,8 +155,11 @@ const store = createStore<GlobalDataProps>({
       return context.commit('fetchColumn', data)
     },
     async fetchPosts(context, cid) {
-      const { data } = await getPosts(cid)
-      return context.commit('fetchPosts', data)
+      if (!context.state.posts.loadedColumns.includes(cid)) {
+        const { data } = await getPosts(cid)
+        return context.commit('fetchPosts', {data,cid})
+      }
+
     },
     // user部分
     async login(context, payload) {
@@ -149,15 +170,26 @@ const store = createStore<GlobalDataProps>({
       const { data } = await getCurrentUser()
       return context.commit('fetchCurrentUser', data)
     },
-    async test({ dispatch },payload){
-      return dispatch('login',payload).then(() => {
+    async test({ dispatch }, payload) {
+      return dispatch('login', payload).then(() => {
         return dispatch('fetchCurrentUser')
       })
     },
     // 发布post
-    async createPost({commit},payload){
+    async createPost({ commit }, payload) {
       const { data } = await post(payload)
-      return commit('createPost',data)
+      return commit('createPost', data)
+    },
+    // 查看文章内容
+    async fetchPost({ state,commit }, id) {
+      const currentPost = state.posts.data[id]
+      if (!currentPost || !currentPost.content){
+        const { data } = await findPostById(id)
+        return commit('fetchPost', data)
+      }else{
+        return Promise.resolve({data: currentPost})
+      }
+      
     }
   }
 })
