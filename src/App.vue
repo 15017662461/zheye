@@ -1,7 +1,6 @@
 <template>
   <div class="container-fluid px-0 flex-shrink-0">
     <globale-header :user="user"></globale-header>
-    <upload actions="/upload" :beforeUpload="beforeUpload"></upload>
     <router-view></router-view>
     <loader v-if="isLoading" background="rgba(0,0,0,0.8)"></loader>
     <footer class="text-center py-4 text-secondary bg-light mt-6">
@@ -20,13 +19,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, watch } from "vue";
+import { defineComponent, computed,  watch } from "vue";
 import GlobaleHeader from "./components/GlobalHeader.vue";
 import Loader from "./components/Loader.vue";
 import createMessage from "./components/createMessage";
-import Upload from './components/Upload.vue'
 import { useStore } from "vuex";
-import { GlobalDataProps, UserProps } from "./store";
+import { GlobalDataProps, UserProps, ResponseType, PostImage } from "./store";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 
@@ -35,7 +33,6 @@ export default defineComponent({
   components: {
     GlobaleHeader,
     Loader,
-    Upload,
   },
   setup() {
     const store = useStore<GlobalDataProps>();
@@ -48,29 +45,10 @@ export default defineComponent({
         createMessage(message, "error");
       }
     });
-    onMounted(() => {
-      if (!store.state.user.isLogin && store.state.token) {
-        store.dispatch("fetchCurrentUser")
-        .then(data => {
-          console.log(data)
-        })
-        .catch(e => {
-          store.commit('logout')
-        });
-      }
-    });
-    const beforeUpload = (file: File) => {
-      const isJPG = file.type === 'image/jped'
-      if(!isJPG){
-        createMessage('上传图片只能是JPG格式！','error')
-      }
-      return isJPG
-    }
     return {
       user,
       isLoading,
       error,
-      beforeUpload
     };
   },
 });

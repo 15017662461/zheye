@@ -85,7 +85,7 @@ export default defineComponent({
       { type: "required", message: "重复密码不能为空" },
       { type:"custom",validator:() =>{return formData.password === formData.repeatPassword},message:'两次密码不相同'  }
     ];
-    const formSubmit = (result) => {
+    const formSubmit = (result: boolean) => {
       if(result){
         console.log(result)
         signup({email:formData.email,nickName:formData.nickName,password:formData.password})

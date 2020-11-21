@@ -65,7 +65,7 @@ export default defineComponent({
     }
     const toLogout = () => {
       store.commit('logout')
-      router.push({name:'login'})
+      router.push('/login')
     }
     const toSignup = () => {
       router.push({name:'signup'})

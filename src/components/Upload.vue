@@ -1,10 +1,14 @@
 <template>
   <div class="file-upload">
-    <button class="btn btn-primary" @click.prevent="triggerUpload">
-      <span v-if="fileStatus === 'loading'">正在上传...</span>
-      <span v-else-if="fileStatus === 'success'">上传成功</span>
-      <span v-else>点击上传</span>
-    </button>
+    <div class="file-upload-container" v-bind="$attrs" @click.prevent="triggerUpload">
+      <slot v-if="fileStatus === 'loading'" name="loading">
+        <button class="btn btn-primary" disabled>正在上传...</button>
+      </slot>
+      <slot v-else-if="fileStatus === 'success'" name="uploaded" :uploadedData="uploadedData"
+        ><button class="btn btn-primary" disabled>上传成功</button></slot
+      >
+      <slot v-else name="default"><button class="btn btn-primary">点击上传</button></slot>
+    </div>
     <input
       type="file"
       class="file-input d-none"
@@ -30,9 +34,15 @@ export default defineComponent({
       type: Function as PropType<CheckFunction>,
     },
   },
-  setup(props) {
+  emits: {
+    "file-uploaded": null,
+    "file-upload-error": null,
+  },
+  inheritAttrs:false,
+  setup(props, context) {
     const fileInput = ref<null | HTMLElement>(null);
     const fileStatus = ref<UploadStatus>("ready");
+    const uploadedData = ref();
     const triggerUpload = () => {
       if (fileInput.value) {
         fileInput.value.click();
@@ -44,8 +54,8 @@ export default defineComponent({
         const files = Array.from(currentTarget.files);
         if (props.beforeUpload) {
           const result = props.beforeUpload(files[0]);
-          if(!result){
-            return
+          if (!result) {
+            return;
           }
         }
         fileStatus.value = "loading";
@@ -55,10 +65,13 @@ export default defineComponent({
         uploadFile(props.actions, formData)
           .then((data) => {
             fileStatus.value = "success";
+            uploadedData.value = data
             console.log(data);
+            context.emit("file-uploaded", data);
           })
-          .catch((e) => {
-            console.log(e);
+          .catch((error) => {
+            console.log(error);
+            context.emit("file-upload-error", { error });
           });
       }
     };
@@ -67,6 +80,7 @@ export default defineComponent({
       fileStatus,
       triggerUpload,
       handleFileChange,
+      uploadedData
     };
   },
 });

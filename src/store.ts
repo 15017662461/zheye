@@ -2,10 +2,14 @@ import axios from './network/index'
 import { createStore } from 'vuex'
 import { getColumns, getColumn, getPosts } from './network/columns'
 import { toLogin, getCurrentUser } from './network/user'
-import Home from './views/Home.vue'
-import Login from './views/Login.vue'
-import router from './router'
+import { post } from './network/file'
 
+
+export interface ResponseType<P = {}>{
+  code: number;
+  msg: string;
+  data: P;
+}
 
 export interface UserProps {
   isLogin: boolean;
@@ -40,7 +44,7 @@ export interface PostProps {
   title: string;
   excerpt?: string;
   content?: string;
-  image?: PostImage;
+  image?: PostImage | string;
   createdAt?: string;
   column: string;
   author?: string | UserProps;
@@ -50,6 +54,13 @@ export interface PostProps {
 export interface PostImage {
   url?: string;
   _id?: string;
+}
+
+export interface ImageProps {
+  _id?: string;
+  url?: string;
+  createdAt?: string;
+  fitUrl?: string;
 }
 
 export interface GlobalErrorProps {
@@ -107,42 +118,47 @@ const store = createStore<GlobalDataProps>({
       state.user = { isLogin: true, ...data }
     },
     logout(state) {
+      // console.log(state.user)
       state.user = {
-        isLogin: false
+        isLogin: false,
       }
+      state.token = ''
       localStorage.removeItem('token')
     },
-    
-
   },
   actions: {
     // column部分
     async fetchColumns(context) {
       const { data } = await getColumns()
-      context.commit('fetchColumns', data)
+      return context.commit('fetchColumns', data)
     },
     async fetchColumn(context, cid) {
       const { data } = await getColumn(cid)
-      context.commit('fetchColumn', data)
+      return context.commit('fetchColumn', data)
     },
     async fetchPosts(context, cid) {
       const { data } = await getPosts(cid)
-      context.commit('fetchPosts', data)
+      return context.commit('fetchPosts', data)
     },
     // user部分
     async login(context, payload) {
       const { data } = await toLogin(payload)
-      context.commit('login', data)
+      return context.commit('login', data)
     },
     async fetchCurrentUser(context) {
       const { data } = await getCurrentUser()
-      context.commit('fetchCurrentUser', data)
+      return context.commit('fetchCurrentUser', data)
     },
     async test({ dispatch },payload){
       return dispatch('login',payload).then(() => {
         return dispatch('fetchCurrentUser')
       })
     },
+    // 发布post
+    async createPost({commit},payload){
+      const { data } = await post(payload)
+      return commit('createPost',data)
+    }
   }
 })
 

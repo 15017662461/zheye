@@ -44,7 +44,10 @@ const routes = [
   {
     path:'/signup',
     name:'signup',
-    component:Signup
+    component:Signup,
+    meta:{
+      redirectAlreadyLogin:true
+    }
   }
 ]
 
@@ -55,16 +58,43 @@ const router = createRouter({
 
 
 router.beforeEach((to,from,next) => {
-  setTimeout(() => {
-    console.log(store.state.user)
-    if(to.meta.requireLogin && !store.state.user.isLogin){
-      next({name:'login'})
-    }else if(store.state.user.isLogin && to.meta.redirectAlreadyLogin){
-      next({name:'home'})
+    // if(to.meta.requireLogin && !store.state.user.isLogin){
+    //   next({name:'login'})
+    // }else if(store.state.user.isLogin && to.meta.redirectAlreadyLogin){
+    //   next({name:'home'})
+    // }else{
+    //   next()
+    // }
+    const { user,token } = store.state;
+    const { requireLogin,redirectAlreadyLogin } = to.meta
+    if(!user.isLogin){
+      if(token){
+        store.dispatch('fetchCurrentUser')
+          .then(data => {
+            if(redirectAlreadyLogin){
+              next('/')
+            }else{
+              next()
+            }
+          })
+          .catch(e => {
+            store.commit('logout')
+            next('/login')
+          })
+      }else{
+        if(requireLogin){
+          next('/login')
+        }else{
+          next()
+        }
+      }
     }else{
-      next()
+      if(redirectAlreadyLogin){
+        next('/')
+      }else{
+        next()
+      }
     }
-  },200)
 })
 
 

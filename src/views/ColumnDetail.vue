@@ -2,7 +2,7 @@
   <div class="w-690 column-detail-page">
     <div class="column-info row mb-4 border-bottom pb-4 align-items-center">
       <div class="col-3 text-center">
-        <img :src="column && column.avatar.url" :alt="column && column.description" class="rounded-circle border w-100">
+        <img :src="column && column.avatar && column.avatar.url" :alt="column && column.description" class="rounded-circle border w-100">
       </div>
       <div class="col-9">
         <h4>{{column && column.title}}</h4>
@@ -19,6 +19,7 @@ import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import { GlobalDataProps, ColumnProps } from '../store'
 import PostList from '../components/PostList.vue'
+import { generateFitUrl } from "../helper"
 export default defineComponent({
   name:'ColumnDetail',
   components:{
@@ -28,7 +29,17 @@ export default defineComponent({
     const route = useRoute()
     const store = useStore<GlobalDataProps>()
     const currenId = route.params.id
-    const column = computed<ColumnProps>(() => store.getters.getColumnById(currenId))
+    const column = computed<ColumnProps>(() => {
+      const selectColumn = store.getters.getColumnById(currenId) as ColumnProps
+      if(selectColumn){
+        generateFitUrl(selectColumn,100,100)
+      }
+      return selectColumn
+    })
+    setTimeout(() =>{
+      console.log(column)
+      
+    },1000)
     const list = computed(() => store.getters.getPostsByCid(currenId))
     onMounted(() => {
       store.dispatch('fetchColumn',currenId)

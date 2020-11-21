@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import { PostProps } from "../store";
+import { PostImage, PostProps } from "../store";
 export default defineComponent({
   name: "PostList",
   props: {
@@ -43,9 +43,10 @@ export default defineComponent({
   setup(props) {
     const newList = computed(() => {
       return props.list.map((l) => {
-        if (l.image  && l.image.url) {
-          l.image.url =
-            l.image.url + "?x-oss=process=image/resize,m_pad,h_50,w_50";
+        const img = l.image as PostImage
+        if (img && img.url) {
+          img.url =
+            img.url + "?x-oss=process=image/resize,m_pad,h_50,w_50";
         }
         return l;
       });

@@ -6,7 +6,7 @@
           <img src="../assets/callout.svg" alt="callout" class="w-50"/>
           <h2 class="font-weight-light">随心写作，自由表达</h2>
           <p>
-            <a href="#" class="btn btn-primary my-2">开始写文章</a>
+            <a href="#" class="btn btn-primary my-2" @click="toCreatePost">开始写文章</a>
           </p>
         </div>
       </div>
@@ -18,6 +18,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, onMounted, onActivated } from "vue"
+import { useRouter } from "vue-router"
 import { useStore } from 'vuex'
 import ColumnList from '../components/ColumnList.vue'
 import { GlobalDataProps } from '../store'
@@ -27,6 +28,7 @@ export default defineComponent({
     ColumnList,
   },
   setup(){
+    const router = useRouter()
     const store = useStore<GlobalDataProps>()
     const list = computed(() => {
       return store.state.columns
@@ -34,12 +36,16 @@ export default defineComponent({
     const biggerColumnsLen = computed(() => {
       return store.getters.biggerColumnsLen
     })
+    const toCreatePost = () => {
+      router.push('/create')
+    }
     onMounted(() =>{
       store.dispatch('fetchColumns')
     })
     return{
       list,
-      biggerColumnsLen
+      biggerColumnsLen,
+      toCreatePost
     }
   }
 })
