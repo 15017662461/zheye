@@ -19,6 +19,11 @@
               ></dropdown-item
             >
             <dropdown-item
+              ><a href="#" class="dropdown-item" @click="toMyColumn"
+                >我的专栏</a
+              ></dropdown-item
+            >
+            <dropdown-item
               ><a href="#" class="dropdown-item">编辑资料</a></dropdown-item
             >
             <dropdown-item
@@ -32,10 +37,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 import { useRouter } from 'vue-router'
 import Dropdown from "./Dropdown.vue";
 import DropdownItem from "./DropdownItem.vue";
+import { GlobalDataProps } from '../store'
 
 import { UserProps } from '../store'
 import { useStore } from "vuex";
@@ -53,7 +59,10 @@ export default defineComponent({
   },
   setup(){
     const router = useRouter()
-    const store = useStore()
+    const store = useStore<GlobalDataProps>()
+    const userId = computed(() => {
+      return store.state.user.column
+    })
     const createPost = () => {
       router.push('/create')
     }
@@ -70,12 +79,18 @@ export default defineComponent({
     const toSignup = () => {
       router.push({name:'signup'})
     } 
+    const toMyColumn = () =>{
+      const id = userId.value as string;
+      router.push(`/column/${id}`)
+    }
     return {
       createPost,
       clickToLogin,
       clickToHome,
       toLogout,
-      toSignup
+      toSignup,
+      userId,
+      toMyColumn
     }
   }
 });

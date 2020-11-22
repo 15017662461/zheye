@@ -3,7 +3,9 @@
     <modal title="删除文章" :visible="modalIsVisible"
       @modal-on-close="modalIsVisible = false"
       @modal-on-confirm="hideAndDelete"
-    />
+    >
+      <p>确定要删除这篇文章吗？</p>
+    </modal>
     <article class="w-75 mx-auto mb-5 pb-3">
       <img
         :src="currentImageUrl"
@@ -30,7 +32,7 @@
         >
           编辑
         </router-link>
-        <button type="button" class="btn btn-danger">删除</button>
+        <button type="button" class="btn btn-danger" @click.prevent="modalIsVisible = true">删除</button>
       </div>
     </article>
   </div>
@@ -97,7 +99,7 @@ export default defineComponent({
       store.dispatch('deletePost', currentId).then((rawData: ResponseType<PostProps>) => {
         createMessage('删除成功，2秒后跳转到专栏首页', 'success', 2000)
         setTimeout(() => {
-          router.push({ name: 'column', params: { id: rawData.data.column } })
+          router.push(`/column/${store.state.user.column}`)
         }, 2000)
       })
     }

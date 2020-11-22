@@ -3,7 +3,7 @@ import { createStore } from 'vuex'
 import { getColumns, getColumn, getPosts } from './network/columns'
 import { toLogin, getCurrentUser } from './network/user'
 import { post } from './network/file'
-import { findPostById } from './network/posts'
+import { findPostById, updatePost, deletePost } from './network/posts'
 import { arrToObj, objToArr } from './helper'
 
 export interface ResponseType<P = {}> {
@@ -143,6 +143,16 @@ const store = createStore<GlobalDataProps>({
       state.token = ''
       localStorage.removeItem('token')
     },
+    // 更新文章
+    updatePost(state,data){
+      state.posts.data[data._id] = data
+      console.log( state.posts.data)
+    },
+    // 删除文章
+    deletePost(state,data){
+      delete state.posts.data[data._id]
+      console.log(data)
+    }
   },
   actions: {
     // column部分
@@ -189,7 +199,17 @@ const store = createStore<GlobalDataProps>({
       }else{
         return Promise.resolve({data: currentPost})
       }
-      
+    },
+    // 更新文章
+    async updatePost({ commit },sendData){
+      const { data } = await updatePost(sendData)
+      // console.log(data)
+      return commit('updatePost',data)
+    },
+    // 删除文章
+    async deletePost({ commit },id){
+      const { data } = await deletePost(id)
+      return commit('deletePost',data)
     }
   }
 })
