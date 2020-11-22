@@ -5,10 +5,8 @@ import ColumnDetail from './views/ColumnDetail.vue'
 import CreatePost from './views/CreatePost.vue'
 import Signup from './views/Signup.vue'
 import PostDetail from './views/PostDetail.vue'
+import NotFound from './views/NotFound.vue'
 import store from './store'
-
-
-
 
 
 const routes = [
@@ -54,6 +52,11 @@ const routes = [
     path:'/posts/:id',
     name:'posts',
     component:PostDetail
+  },
+  {
+    path:'/*',
+    name:'notFound',
+    components:NotFound
   }
 ]
 

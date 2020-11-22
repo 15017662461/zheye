@@ -79,6 +79,7 @@ const store = createStore<GlobalDataProps>({
   },
   getters: {
     getColumns: (state) => {
+      console.log(state.columns.data)
       return objToArr(state.columns.data)
     },
     getColumnById: (state) => (id: string) => {
@@ -106,6 +107,7 @@ const store = createStore<GlobalDataProps>({
     fetchColumns(state, rawData) {
       const { data } = state.columns
       const { list, count, currentPage } = rawData
+      console.log(rawData)
       state.columns = {
         data: { ...data, ...arrToObj(list) },
         total: count,
@@ -115,10 +117,11 @@ const store = createStore<GlobalDataProps>({
     fetchColumn(state, rawData) {
       state.columns.data[rawData._id] = rawData
     },
-    fetchPosts(state, {data: rawData,extraData: cid}) {
+    fetchPosts(state, payload) {
       // console.log(canshu)
-      state.posts.data = { ...state.posts.data, ...arrToObj(rawData.list) }
-      state.posts.loadedColumns.push(cid)
+      state.posts.data = { ...state.posts.data, ...arrToObj(payload.data.list) }
+      console.log(payload.cid)
+      state.posts.loadedColumns.push(payload.cid)
     },
     fetchPost(state, rawData) {
       state.posts.data[rawData._id] = rawData
@@ -146,7 +149,7 @@ const store = createStore<GlobalDataProps>({
     // 更新文章
     updatePost(state,data){
       state.posts.data[data._id] = data
-      console.log( state.posts.data)
+      // console.log( state.posts.data)
     },
     // 删除文章
     deletePost(state,data){
@@ -156,20 +159,24 @@ const store = createStore<GlobalDataProps>({
   },
   actions: {
     // column部分
-    async fetchColumns(context) {
-      const { data } = await getColumns()
-      return context.commit('fetchColumns', data)
+    async fetchColumns({ state,commit },params = {}) {
+      const { currentPage = 1,pageSize = 3 } = params 
+      if(state.columns.currentPage < currentPage){
+        const { data } = await getColumns(currentPage,pageSize)
+        return commit('fetchColumns', data)
+      } 
     },
-    async fetchColumn(context, cid) {
-      const { data } = await getColumn(cid)
-      return context.commit('fetchColumn', data)
+    async fetchColumn({ state,commit }, cid) {
+      if(!state.columns.data[cid]){
+        const { data } = await getColumn(cid)
+        return commit('fetchColumn', data)
+      }
     },
     async fetchPosts(context, cid) {
       if (!context.state.posts.loadedColumns.includes(cid)) {
         const { data } = await getPosts(cid)
         return context.commit('fetchPosts', {data,cid})
       }
-
     },
     // user部分
     async login(context, payload) {

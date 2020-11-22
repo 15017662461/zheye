@@ -55,8 +55,29 @@ export const arrToObj = <T extends { _id?: string }>(arr: Array<T>) => {
   }, {} as { [key: string]: T })
 }
 
-export const objToArr = <T>(obj: {[key: string]: T}) => {
+export const objToArr = <T>(obj: { [key: string]: T }) => {
   return Object.keys(obj).map(key => obj[key])
 }
 
+// function testArrToObj<T extends { _id?: string }>(arr: Array<T>) {
+//   return arr.reduce((prev, now) => {
+//     if (now._id) {
+//       prev[now._id] = now;
+//     }
+//     return prev
+//   }, {} as { [index: string]: T })
+// }
+
+// const testArr = [{ _id: 'uwef', name: '132' }, { _id: 'ygwf', name: 'gyu' }]
+// console.log(testArrToObj<{ _id: string; name?: string }>(testArr))
+
+
+// function testObjToArr<T>(obj: { [index: string]: T }) {
+//   return Object.keys(obj).map(item =>{
+//     return obj[item]
+//   })
+// }
+
+// const testObj = {'wuef':{_id:'wuef',sex:1},'qwe':{_id:'qwe',sex:0}}
+// console.log(testObjToArr(testObj))
 
