@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid px-0 flex-shrink-0">
-    <globale-header :user="user"></globale-header>
+    <globale-header></globale-header>
     <router-view></router-view>
     <loader v-if="isLoading" background="rgba(0,0,0,0.8)"></loader>
     <footer class="text-center py-4 text-secondary bg-light mt-6">
@@ -24,7 +24,7 @@ import GlobaleHeader from "./components/GlobalHeader.vue";
 import Loader from "./components/Loader.vue";
 import createMessage from "./components/createMessage";
 import { useStore } from "vuex";
-import { GlobalDataProps, UserProps, ResponseType } from "./store";
+import { GlobalDataProps } from "./store";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 
@@ -36,7 +36,6 @@ export default defineComponent({
   },
   setup() {
     const store = useStore<GlobalDataProps>();
-    const user = computed(() => store.state.user);
     const isLoading = computed(() => store.state.loading);
     const error = computed(() => store.state.error);
     watch(error, () => {
@@ -46,7 +45,6 @@ export default defineComponent({
       }
     });
     return {
-      user,
       isLoading,
       error,
     };

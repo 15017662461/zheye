@@ -40,7 +40,7 @@ export const testPosts: PostProps[] = [
     title: '这是我的第一篇文章',
     content: 'this is my first post',
     image: '123',
-    createAt: '2020-06-11 10:34:22',
+    createdAt: '2020-06-11 10:34:22',
     column: '2'
   },
   {
@@ -48,7 +48,7 @@ export const testPosts: PostProps[] = [
     title: '这是我的第2篇文章',
     content: 'this is my second post',
     image: '123',
-    createAt: '2020-06-11 10:34:22',
+    createdAt: '2020-06-11 10:34:22',
     column: '2'
   },
   {
@@ -56,35 +56,35 @@ export const testPosts: PostProps[] = [
     title: '这是我的第2篇文章',
     content: 'this is my second post',
     image: '123',
-    createAt: '2020-06-11 10:34:22',
+    createdAt: '2020-06-11 10:34:22',
     column: '2'
   },
   {
     _id: '3',
     title: '这是我的第2篇文章',
     content: 'this is my second post',
-    createAt: '2020-06-11 10:34:22',
+    createdAt: '2020-06-11 10:34:22',
     column: '2'
   },
   {
     _id: '4',
     title: '这是我的第2篇文章',
     content: 'this is my second post',
-    createAt: '2020-06-11 10:34:22',
+    createdAt: '2020-06-11 10:34:22',
     column: '2'
   },
   {
     _id: '5',
     title: '这是我的第2篇文章',
     content: 'this is my second post',
-    createAt: '2020-06-11 10:34:22',
+    createdAt: '2020-06-11 10:34:22',
     column: '2'
   },
   {
     _id: '6',
     title: '这是我的第2篇文章',
     content: 'this is my second post',
-    createAt: '2020-06-11 10:34:22',
+    createdAt: '2020-06-11 10:34:22',
     column: '2'
   },
 ]

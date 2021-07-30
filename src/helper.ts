@@ -55,6 +55,16 @@ export const arrToObj = <T extends { _id?: string }>(arr: Array<T>) => {
   }, {} as { [key: string]: T })
 }
 
+export const arrToObj2 = <T extends {_id?: string}> (arr: Array<T>) => {
+  const res = {} as {[id: string]: T}
+  arr.forEach(a => {
+    if(a._id){
+      res[a._id] = a
+    }
+  })
+  return res
+}
+
 export const objToArr = <T>(obj: { [key: string]: T }) => {
   return Object.keys(obj).map(key => obj[key])
 }

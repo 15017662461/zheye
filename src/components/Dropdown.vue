@@ -6,7 +6,7 @@
       @click.prevent="toggleOpen"
       >{{ title }}</a
     >
-    <ul class="dropdown-menu" :style="{ display: 'block' }" v-if="isOpen">
+    <ul class="dropdown-menu" :style="{ display: 'block' }" v-show="isOpen">
       <slot></slot>
     </ul>
   </div>

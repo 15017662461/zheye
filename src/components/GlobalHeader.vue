@@ -37,13 +37,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
+import { computed, defineComponent } from "vue";
 import { useRouter } from 'vue-router'
 import Dropdown from "./Dropdown.vue";
 import DropdownItem from "./DropdownItem.vue";
 import { GlobalDataProps } from '../store'
 
-import { UserProps } from '../store'
 import { useStore } from "vuex";
 export default defineComponent({
   name: "GlobaleHeader",
@@ -51,18 +50,11 @@ export default defineComponent({
     Dropdown,
     DropdownItem,
   },
-  props: {
-    user: {
-      type: Object as PropType<UserProps>,
-      required: true,
-    },
-  },
   setup(){
     const router = useRouter()
     const store = useStore<GlobalDataProps>()
-    const userId = computed(() => {
-      return store.state.user.column
-    })
+    const user = computed(() => store.state.user)
+
     const createPost = () => {
       router.push('/create')
     }
@@ -80,7 +72,7 @@ export default defineComponent({
       router.push({name:'signup'})
     } 
     const toMyColumn = () =>{
-      const id = userId.value as string;
+      const id = user.value.column as string;
       router.push(`/column/${id}`)
     }
     return {
@@ -89,8 +81,8 @@ export default defineComponent({
       clickToHome,
       toLogout,
       toSignup,
-      userId,
-      toMyColumn
+      toMyColumn,
+      user
     }
   }
 });

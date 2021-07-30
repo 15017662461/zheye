@@ -104,26 +104,24 @@ const store = createStore<GlobalDataProps>({
     createPost(state, newPost) {
       state.posts.data[newPost._id] = newPost
     },
-    fetchColumns(state, rawData) {
+    fetchColumns(state, rawData) { // 获取专栏列表信息
       const { data } = state.columns
       const { list, count, currentPage } = rawData
-      console.log(rawData)
       state.columns = {
         data: { ...data, ...arrToObj(list) },
         total: count,
         currentPage: currentPage * 1
       }
     },
-    fetchColumn(state, rawData) {
+    fetchColumn(state, rawData) { // 获取专栏详情信息（例如专栏的简介等）
       state.columns.data[rawData._id] = rawData
     },
-    fetchPosts(state, payload) {
-      // console.log(canshu)
+    fetchPosts(state, payload) { // 获取专栏中文章列表
       state.posts.data = { ...state.posts.data, ...arrToObj(payload.data.list) }
-      console.log(payload.cid)
+      // console.log(payload)
       state.posts.loadedColumns.push(payload.cid)
     },
-    fetchPost(state, rawData) {
+    fetchPost(state, rawData) { // 获取专栏中文章详情
       state.posts.data[rawData._id] = rawData
       // console.log(data)
     },
@@ -147,27 +145,27 @@ const store = createStore<GlobalDataProps>({
       localStorage.removeItem('token')
     },
     // 更新文章
-    updatePost(state,data){
+    updatePost(state, data) {
       state.posts.data[data._id] = data
       // console.log( state.posts.data)
     },
     // 删除文章
-    deletePost(state,data){
+    deletePost(state, data) {
       delete state.posts.data[data._id]
       console.log(data)
     }
   },
   actions: {
     // column部分
-    async fetchColumns({ state,commit },params = {}) {
-      const { currentPage = 1,pageSize = 3 } = params 
-      if(state.columns.currentPage < currentPage){
-        const { data } = await getColumns(currentPage,pageSize)
+    async fetchColumns({ state, commit }, params = {}) {
+      const { currentPage = 1, pageSize = 3 } = params
+      if (state.columns.currentPage < currentPage) {
+        const { data } = await getColumns(currentPage, pageSize)
         return commit('fetchColumns', data)
-      } 
+      }
     },
-    async fetchColumn({ state,commit }, cid) {
-      if(!state.columns.data[cid]){
+    async fetchColumn({ state, commit }, cid) {
+      if (!state.columns.data[cid]) {
         const { data } = await getColumn(cid)
         return commit('fetchColumn', data)
       }
@@ -175,7 +173,7 @@ const store = createStore<GlobalDataProps>({
     async fetchPosts(context, cid) {
       if (!context.state.posts.loadedColumns.includes(cid)) {
         const { data } = await getPosts(cid)
-        return context.commit('fetchPosts', {data,cid})
+        return context.commit('fetchPosts', { data, cid })
       }
     },
     // user部分
@@ -198,25 +196,25 @@ const store = createStore<GlobalDataProps>({
       return commit('createPost', data)
     },
     // 查看文章内容
-    async fetchPost({ state,commit }, id) {
+    async fetchPost({ state, commit }, id) {
       const currentPost = state.posts.data[id]
-      if (!currentPost || !currentPost.content){
+      if (!currentPost || !currentPost.content) {
         const { data } = await findPostById(id)
         return commit('fetchPost', data)
-      }else{
-        return Promise.resolve({data: currentPost})
+      } else {
+        return Promise.resolve({ data: currentPost })
       }
     },
     // 更新文章
-    async updatePost({ commit },sendData){
+    async updatePost({ commit }, sendData) {
       const { data } = await updatePost(sendData)
       // console.log(data)
-      return commit('updatePost',data)
+      return commit('updatePost', data)
     },
     // 删除文章
-    async deletePost({ commit },id){
+    async deletePost({ commit }, id) {
       const { data } = await deletePost(id)
-      return commit('deletePost',data)
+      return commit('deletePost', data)
     }
   }
 })

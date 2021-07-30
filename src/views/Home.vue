@@ -14,7 +14,7 @@
       </div>
     </section>
     <h4 class="font-weight-bold text-center">发现精彩</h4>
-    <column-list :list="list"></column-list>
+    <column-list></column-list>
     <button class="btn btn-outline-primary mt-2 mb-5 btn-block w-25 aaa"
       @click="loadMorePage" v-if="!isLastPage"
     >
@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, onActivated } from "vue";
+import { defineComponent, computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import useLoadMore from "../hooks/useLoadMore";
@@ -39,7 +39,6 @@ export default defineComponent({
     const router = useRouter();
     const store = useStore<GlobalDataProps>();
     const total = computed(() => store.state.columns.total);
-    const list = computed(() => store.getters.getColumns);
     const currentPage = computed(() => store.state.columns.currentPage)
     const toCreatePost = () => {
       router.push("/create");
@@ -50,7 +49,6 @@ export default defineComponent({
     const { loadMorePage, isLastPage } = useLoadMore('fetchColumns', total, { pageSize: 3, currentPage: (currentPage.value ? currentPage.value + 1 : 2) })
 
     return {
-      list,
       toCreatePost,
       loadMorePage,
       isLastPage,

@@ -22,21 +22,18 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType } from "vue";
-import { ColumnProps } from "../store";
+import { computed, defineComponent } from "vue";
+import { ColumnProps, GlobalDataProps } from "../store";
 import { addColumnAvatar } from "../helper";
+import { useStore } from "vuex";
 
 export default defineComponent({
   name: "ColumnList",
-  props: {
-    list: {
-      type: Array as PropType<ColumnProps[]>,
-      required: true,
-    },
-  },
-  setup(props) {
+  setup() {
+    const store = useStore<GlobalDataProps>();
     const columnList = computed(() => {
-      return props.list.map((column) => {
+      const list = store.getters.getColumns as ColumnProps[];
+      return list.map((column) => {
         addColumnAvatar(column, 50, 50);
         return column;
       });

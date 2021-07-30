@@ -60,10 +60,6 @@ export default defineComponent({
     const onFormSubmit = (result: boolean) => {
       console.log("result", result);
       if(result){
-        // store.dispatch('login',{email:emailVal.value,password:passwordVal.value})
-        // setTimeout(() => {
-        //   store.dispatch('fetchCurrentUser')
-        // },1500)
         store.dispatch('test',{email:emailVal.value,password:passwordVal.value})
           .then((data) => {
             // console.log(data)
