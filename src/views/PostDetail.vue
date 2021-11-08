@@ -51,7 +51,6 @@ import {
   PostProps,
   ImageProps,
   UserProps,
-  ResponseType,
 } from "../store";
 export default defineComponent({
   name: "PostDetail",
@@ -96,7 +95,7 @@ export default defineComponent({
     });
     const hideAndDelete = () => {
       modalIsVisible.value = false
-      store.dispatch('deletePost', currentId).then((rawData: ResponseType<PostProps>) => {
+      store.dispatch('deletePost', currentId).then(() => {
         createMessage('删除成功，2秒后跳转到专栏首页', 'success', 2000)
         setTimeout(() => {
           router.push(`/column/${store.state.user.column}`)

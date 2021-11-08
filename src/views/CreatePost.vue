@@ -16,7 +16,7 @@
           <h2>正在上传</h2>
         </div>
       </template>
-      <template v-slot:uploaded="dataProps">
+      <template #uploaded="dataProps">
         <img :src="dataProps.uploadedData.data.url" />
         <h3>点击重新上传</h3>
       </template>
@@ -55,8 +55,7 @@ import { useRoute, useRouter } from "vue-router";
 import ValidateForm from "../components/ValidateForm.vue";
 import ValidateInput from "../components/ValidateInput.vue";
 import { RulesProp } from "../components/ValidateInput.vue";
-import { GlobalDataProps, PostProps, ResponseType, ImageProps } from "../store";
-import { uploadFile } from "../network/file";
+import {  PostProps, ResponseType, ImageProps } from "../store";
 import Upload from "../components/Upload.vue";
 import { beforeUploadCheck } from "../helper";
 import createMessage from "../components/createMessage";
@@ -144,13 +143,13 @@ export default defineComponent({
       if (isEditMode) {
         store
           .dispatch("fetchPost", route.query.id)
-          .then((rawData: ResponseType<PostProps>) => {
-            const currentPost = rawData.data;
+          .then(() => {
+            const currentPost = store.getters.getCurrentPost(route.query.id);
             if (currentPost.image) {
               uploadedData.value = { data: currentPost.image };
             }
             titleVal.value = currentPost.title;
-            console.log(titleVal.value);
+            // console.log(titleVal.value);
             contentVal.value = currentPost.content || "";
           });
       }

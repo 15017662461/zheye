@@ -118,12 +118,12 @@ const store = createStore<GlobalDataProps>({
     },
     fetchPosts(state, payload) { // 获取专栏中文章列表
       state.posts.data = { ...state.posts.data, ...arrToObj(payload.data.list) }
-      // console.log(payload)
+      // console.log('payload',payload)
       state.posts.loadedColumns.push(payload.cid)
     },
     fetchPost(state, rawData) { // 获取专栏中文章详情
       state.posts.data[rawData._id] = rawData
-      // console.log(data)
+      // console.log(state.posts.data)
     },
     // user部分
     login(state, data) {
@@ -163,7 +163,7 @@ const store = createStore<GlobalDataProps>({
         const { data } = await getColumns(currentPage, pageSize)
         return commit('fetchColumns', data)
       }
-    },
+    }, 
     async fetchColumn({ state, commit }, cid) {
       if (!state.columns.data[cid]) {
         const { data } = await getColumn(cid)
@@ -186,9 +186,11 @@ const store = createStore<GlobalDataProps>({
       return context.commit('fetchCurrentUser', data)
     },
     async test({ dispatch }, payload) {
-      return dispatch('login', payload).then(() => {
-        return dispatch('fetchCurrentUser')
-      })
+      // return dispatch('login', payload).then(() => {
+      //   return dispatch('fetchCurrentUser')
+      // })
+      await dispatch('login',payload)
+      await dispatch('fetchCurrentUser')
     },
     // 发布post
     async createPost({ commit }, payload) {
