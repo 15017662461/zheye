@@ -6,12 +6,13 @@
     <footer class="text-center py-4 text-secondary bg-light mt-6">
       <small>
         <ul class="list-inline mb-0">
-          <li class="list-inline-item">@ 2020 者也专栏 测试git错误4</li>
+          <li class="list-inline-item">@ 2020 者也专栏</li>
           <li class="list-inline-item">课程</li>
           <li class="list-inline-item">文档</li>
           <li class="list-inline-item">练习</li>
           <li class="list-inline-item">更多</li>
           <li class="list-inline-item">jenkins java ssh</li>
+          <li class="list-inline-item">javascript forever</li>
         </ul>
       </small>
     </footer>
