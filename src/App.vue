@@ -11,6 +11,7 @@
           <li class="list-inline-item">文档</li>
           <li class="list-inline-item">练习</li>
           <li class="list-inline-item">更多</li>
+          <li class="list-inline-item">jenkins</li>
         </ul>
       </small>
     </footer>
