@@ -11,8 +11,6 @@
           <li class="list-inline-item">文档</li>
           <li class="list-inline-item">练习</li>
           <li class="list-inline-item">更多</li>
-          <li class="list-inline-item">jenkins java ssh</li>
-          <li class="list-inline-item">javascript forever</li>
         </ul>
       </small>
     </footer>
