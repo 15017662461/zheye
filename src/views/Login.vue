@@ -61,7 +61,7 @@ export default defineComponent({
       console.log("result", result);
       if(result){
         store.dispatch('test',{email:emailVal.value,password:passwordVal.value})
-          .then((data) => {
+          .then(() => {
             // console.log(data)
             createMessage('登录成功 2s后跳转首页','success')
             setTimeout(() => {

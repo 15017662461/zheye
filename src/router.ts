@@ -5,7 +5,7 @@ import ColumnDetail from './views/ColumnDetail.vue'
 import CreatePost from './views/CreatePost.vue'
 import Signup from './views/Signup.vue'
 import PostDetail from './views/PostDetail.vue'
-import NotFound from './views/NotFound.vue'
+import Quill from './views/Quill.vue'
 import store from './store'
 
 
@@ -18,6 +18,11 @@ const routes = [
     path: '/home',
     name: 'home',
     component:Home
+  },
+  {
+    path: '/quill',
+    name: 'quill',
+    component:Quill
   },
   {
     path: '/login',
@@ -53,11 +58,6 @@ const routes = [
     name:'posts',
     component:PostDetail
   },
-  {
-    path:'/*',
-    name:'notFound',
-    components:NotFound
-  }
 ]
 
 const router = createRouter({
@@ -79,14 +79,14 @@ router.beforeEach((to,from,next) => {
     if(!user.isLogin){
       if(token){
         store.dispatch('fetchCurrentUser')
-          .then(data => {
+          .then(() => {
             if(redirectAlreadyLogin){
               next('/')
             }else{
               next()
             }
           })
-          .catch(e => {
+          .catch(() => {
             store.commit('logout')
             next('/login')
           })
