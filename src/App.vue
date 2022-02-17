@@ -10,7 +10,7 @@
           <li class="list-inline-item">课程</li>
           <li class="list-inline-item">文档</li>
           <li class="list-inline-item">练习</li>
-          <li class="list-inline-item">更多456</li>
+          <li class="list-inline-item">更多666</li>
         </ul>
       </small>
     </footer>
