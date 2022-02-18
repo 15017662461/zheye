@@ -4,7 +4,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, nextTick, ref, watch } from "vue";
+import { defineComponent, nextTick, ref } from "vue";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 
