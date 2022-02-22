@@ -18,6 +18,7 @@ export default defineComponent({
           theme: "snow",
           readOnly: false,
         });
+        console.log(editor.getContents());
       }
     });
     console.log("quill");
