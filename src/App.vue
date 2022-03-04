@@ -14,19 +14,17 @@
         </ul>
       </small>
     </footer>
-    
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed,  watch } from "vue";
+import { defineComponent, computed, watch } from "vue";
 import GlobaleHeader from "./components/GlobalHeader.vue";
 import Loader from "./components/Loader.vue";
 import createMessage from "./components/createMessage";
 import { useStore } from "vuex";
 import { GlobalDataProps } from "./store";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 
 export default defineComponent({
   name: "App",
