@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-dark bg-primary justify-content-between mb-4 px-4">
     <div class="w-75 mx-auto navbar">
-      <a href="#" class="navbar-brand" @click="clickToHome">者也专栏修改回来</a>
+      <a href="#" class="navbar-brand" @click="clickToHome">者也专栏修改回来！</a>
       <ul v-if="!user.isLogin" class="list-inline mb-0">
         <li class="list-inline-item">
           <a href="#" class="btn btn-outline-light my-2" @click="clickToLogin">登录</a>
