@@ -33,7 +33,6 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore<GlobalDataProps>();
     const currenId = ref(route.params.id);
-
     const fetchData = () => {
       store.dispatch("fetchColumn", currenId.value);
       store.dispatch("fetchPosts", currenId.value);
