@@ -5,10 +5,10 @@ export function getColumns(currentPage: number,pageSize: number){
 }
 
 export function getColumn(cid: string){
-  return axios.get(`/columns/${cid}`)
+  return cid ? axios.get(`/columns/${cid}`) : {data: null}
   // axios.patch
 }
 
 export function getPosts(cid: string){
-  return axios.get(`/columns/${cid}/posts`)
+  return cid ? axios.get(`/columns/${cid}/posts`) : {data: null}
 }

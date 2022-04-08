@@ -114,9 +114,11 @@ const store = createStore<GlobalDataProps>({
       }
     },
     fetchColumn(state, rawData) { // 获取专栏详情信息（例如专栏的简介等）
+      if (!rawData || !rawData._id) return
       state.columns.data[rawData._id] = rawData
     },
     fetchPosts(state, payload) { // 获取专栏中文章列表
+      if (!payload || !payload.data) return
       state.posts.data = { ...state.posts.data, ...arrToObj(payload.data.list) }
       // console.log('payload',payload)
       state.posts.loadedColumns.push(payload.cid)
