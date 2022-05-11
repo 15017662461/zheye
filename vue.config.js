@@ -1,4 +1,5 @@
 module.exports = {
+  productionSourceMap: false,
   devServer: {
     port: 9988, // 端口
     proxy: {
@@ -12,6 +13,12 @@ module.exports = {
           // 比如我要调用'http://api.vikingship.xyz/api/user/add'，直接写‘/api/user/add’即可
         }
       }
+    }
+  },
+  configureWebpack(config) {
+    if (process.env.NODE_ENV === 'production') {
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
     }
   }
   // lintOnSave: false // 取消 eslint 验证
