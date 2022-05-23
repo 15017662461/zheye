@@ -20,7 +20,7 @@
           <user-profile :user="currentPost.author" v-if="currentPost && typeof currentPost.author === 'object'"></user-profile>
         </div>
         <span class="text-muted col text-right font-italic"
-          >发表于：{{currentPost && currentPost.createdAt}}</span
+          >发表于：2022-05-20 17:20:00</span
         >
       </div>
       <div v-html="currentHTML"></div>

@@ -23,7 +23,7 @@
             {{ post.excerpt }}
           </p>
         </div>
-        <span class="text-muted">{{ post.createdAt }}</span>
+        <span class="text-muted">2022-05-20 17:20:00</span>
       </div>
     </article>
   </div>
